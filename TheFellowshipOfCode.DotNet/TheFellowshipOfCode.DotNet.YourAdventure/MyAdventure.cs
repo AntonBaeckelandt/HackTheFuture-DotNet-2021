@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HTF2020.Contracts;
@@ -14,11 +15,13 @@ namespace TheFellowshipOfCode.DotNet.YourAdventure
     {
         private readonly Random _random = new Random();
 
+        PathFinding pathFinding;
+
         public Task<Party> CreateParty(CreatePartyRequest request)
         {
             var party = new Party
             {
-                Name = "My Party",
+                Name = "5GCoronaComplotTheorie",
                 Members = new List<PartyMember>()
             };
 
@@ -39,6 +42,10 @@ namespace TheFellowshipOfCode.DotNet.YourAdventure
 
         public Task<Turn> PlayTurn(PlayTurnRequest request)
         {
+            
+            if (pathFinding == null) pathFinding = new PathFinding(request);
+            return pathFinding.NextMove(request);
+
             return PlayToEnd();
 
             Task<Turn> PlayToEnd()
