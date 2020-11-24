@@ -16,13 +16,11 @@ namespace TheFellowshipOfCode.DotNet.YourAdventure
     {
 
         private readonly Random _random = new Random();
-
-        private List<Location> chests = new List<Location>();
         private Queue<Node> steps = new Queue<Node>();
 
         public PathFinding(PlayTurnRequest request)
         {
-            chests = request.Map.GetChestsLocations().ToList();
+            List<Location> chests = request.Map.GetChestsLocations().ToList();
 
             List<Location> goals = new List<Location>();
             // Chests
@@ -30,9 +28,9 @@ namespace TheFellowshipOfCode.DotNet.YourAdventure
             // Finish
             goals.Add(request.Map.GetEndPosition());
 
-            for(int i = 0; i < goals.Count; i++)
+            for (int i = 0; i < goals.Count; i++)
             {
-                Location start = i > 0 ? goals[i -1] : request.PartyLocation;
+                Location start = i > 0 ? goals[i - 1] : request.PartyLocation;
                 PathFinder currentPathFinder = new PathFinder(request.Map, start, goals[i]);
                 Node[] nodes = currentPathFinder.SearchPath();
                 Array.Reverse(nodes);
@@ -40,27 +38,14 @@ namespace TheFellowshipOfCode.DotNet.YourAdventure
                     steps.Enqueue(n);
             }
         }
-        /*
-        public Location[] GetOrderedChestList(List<Location> chests)
-        {
-            Dictionary<int, Location> distances = new Dictionary<int, Location>();
-            foreach (Location l in chests)
-            {
-                distances.push()
-            }
-            return chests.OrderBy((n, p) => Util.ManhattanDistance(n, p));
-        }*/
 
         public Task<Turn> NextMove(PlayTurnRequest request)
         {
-
-            if (request.PartyMember != null)
-                Debug.WriteLine("Doing move for:; " + request.PartyMember.Name);
-
+            // Get next action in the queue
             if (steps.Peek() != null)
             {
                 Node node = steps.Dequeue();
-                TurnAction action = getTurnAction(request.PartyLocation, node.Location);
+                TurnAction action = GetTurnAction(request.PartyLocation, node.Location);
                 return Task.FromResult(request.PossibleActions.Contains(action) ? new Turn(action) : new Turn(request.PossibleActions[_random.Next(request.PossibleActions.Length)]));
             }
 
@@ -69,7 +54,7 @@ namespace TheFellowshipOfCode.DotNet.YourAdventure
         }
 
 
-        private TurnAction getTurnAction(Location locNow, Location locGoal)
+        private TurnAction GetTurnAction(Location locNow, Location locGoal)
         {
             if (locGoal.X > locNow.X)
                 return TurnAction.WalkEast;
