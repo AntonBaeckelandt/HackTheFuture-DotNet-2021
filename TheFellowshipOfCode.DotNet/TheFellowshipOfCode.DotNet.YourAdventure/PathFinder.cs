@@ -32,7 +32,6 @@ namespace TheFellowshipOfCode.DotNet.YourAdventure
             int g = 0;
             while (openList.Count > 0)
             {
-                g++;
                 Node lowestCostNode = openList.OrderByDescending(i => i.Cost).First();
                 Location[] neighbours = map.GetNeighbours(lowestCostNode.Location);
 
@@ -62,14 +61,14 @@ namespace TheFellowshipOfCode.DotNet.YourAdventure
                     if (openList.FirstOrDefault(l => l.Location.X == neighbour.Location.X && l.Location.Y == neighbour.Location.Y) == null)
                     {
                         neighbour.Parent = lowestCostNode;
-                        neighbour.DistanceFromStart = g;
+                        neighbour.DistanceFromStart = g + 1;
                         openList.Insert(0, neighbour);
                     }
                     else
                     {
                         if (g + neighbour.DistanceToGoal < neighbour.Cost)
                         {
-                            neighbour.DistanceFromStart = g;
+                            neighbour.DistanceFromStart = g + 1;
                             neighbour.Parent = lowestCostNode;
                         }
                     }
